@@ -7,6 +7,7 @@ let port = 3000
 
 connectDB
 app.use(morgran('dev'))
+app.use(express.json())
 
 const work = require('./route/get.js')
 app.use("/",work)
