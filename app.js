@@ -3,11 +3,14 @@ const express = require('express')
 const app = express();
 const morgran = require('morgan')
 const connectDB = require('./db/ngClinic')
+const cors = require('cors')
+
 let port = 3000
 
 connectDB
 app.use(morgran('dev'))
 app.use(express.json())
+app.use(cors())
 
 const work = require('./route/get.js')
 app.use("/",work)

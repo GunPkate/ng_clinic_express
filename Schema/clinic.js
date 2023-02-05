@@ -1,10 +1,15 @@
-let {Schema} = require('mongoose')
+let {Schema, version} = require('mongoose')
 
 let clinicSchema = new Schema({
     name: String,
     tel: String,
     tax: String,
     address: String
-  },{collation:'clinic'});
+  },
+  {
+    collection:'clinic',
+    versionKey: false
+  }
+  );
 
   module.exports = clinicSchema 
