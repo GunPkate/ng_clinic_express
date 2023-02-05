@@ -2,7 +2,7 @@ const express = require('express')
 const work = express.Router()
 const mongoose = require('mongoose')
 const clinicSchema = mongoose.model("clinic",require("../Schema/clinic.js"))
-
+const customerSchema = mongoose.model('customer',require("../Schema/customer"))
 // work.use((req,res,next)=>{
 //     res.setHeader('Access-Control-Allow-Origin','*')
 //     res.setHeader('Access-Control-Allow-Methods','GET','POST')
@@ -25,7 +25,7 @@ work.post("/clinicSave",async(req,res,next)=>{
 })
 
 work.get("/getInfo",async(req,res)=>{
-    const getInfo = await clinicSchema.find({})
+    const getInfo = await clinicSchema.findOne({})
     .then((err,rs)=>{
         if(err)res.send(err)
         else res.send(rs)
@@ -48,6 +48,30 @@ work.get("/find",async(req,res)=>{
     // console.log(result);
     // res.status(200).json(result)
     // res.send()
+})
+
+work.post("/clinicUpdate",async(req,res)=>{
+    const findall = await clinicSchema.findOneAndUpdate({_id:req.body._id},req.body).then(
+        (err,result)=>{
+            err?res.status(400):res.status(200).json({
+              resultCode: 20000,
+              resultData: result,
+            });
+        }
+    );
+    // console.log(result);
+    // res.status(200).json(result)
+    // res.send()
+})
+
+work.post("/customerSave",async(req,res)=>{
+    await customerSchema.insertMany(req.body).then((err,result)=>{
+        err?res.send(err):res.send(result)
+    })
+})
+
+work.get("/customerGet",async (req,res)=>{
+    await customerSchema.find({}).then((err,result)=>{err?res.send(err):res.send(result)})
 })
 
 work.get("/ss",(req,res,next)=>{
