@@ -3,6 +3,7 @@ const work = express.Router()
 const mongoose = require('mongoose')
 const clinicSchema = mongoose.model("clinic",require("../Schema/clinic.js"))
 const customerSchema = mongoose.model('customer',require("../Schema/customer"))
+const petSchema = mongoose.model('pet',require("../Schema/pet"))
 // work.use((req,res,next)=>{
 //     res.setHeader('Access-Control-Allow-Origin','*')
 //     res.setHeader('Access-Control-Allow-Methods','GET','POST')
@@ -72,6 +73,21 @@ work.post("/customerSave",async(req,res)=>{
 
 work.get("/customerGet",async (req,res)=>{
     await customerSchema.find({}).then((err,result)=>{err?res.send(err):res.send(result)})
+})
+
+work.post("/customerDelete",async (req,res)=>{
+    await customerSchema.findOneAndDelete({_id: req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)})
+})
+
+work.post("/customerUpdate",async (req,res)=>{
+        const re = await customerSchema.updateOne({_id: req.body._id},req.body).then((err,result)=>{err?res.send(err):res.send(result)})
+        console.log(re)
+})
+
+work.post("/petSave",async (req,res)=>{
+    await petSchema.insertMany(req.body).then((err,result)=>{
+        err?res.send(err):res.send(result)
+    })
 })
 
 work.get("/ss",(req,res,next)=>{
