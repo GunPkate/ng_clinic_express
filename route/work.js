@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const clinicSchema = mongoose.model("clinic",require("../Schema/clinic.js"))
 const customerSchema = mongoose.model('customer',require("../Schema/customer"))
 const petSchema = mongoose.model('pet',require("../Schema/pet"))
+const ObjectId = require('mongodb').ObjectId;
 // work.use((req,res,next)=>{
 //     res.setHeader('Access-Control-Allow-Origin','*')
 //     res.setHeader('Access-Control-Allow-Methods','GET','POST')
@@ -85,10 +86,13 @@ work.post("/customerUpdate",async (req,res)=>{
 })
 
 work.post("/petSave",async (req,res)=>{
+    req.body.customer_id = new ObjectId(req.body.customer_id) //convert string obj
     await petSchema.insertMany(req.body).then((err,result)=>{
         err?res.send(err):res.send(result)
     })
 })
+
+work.get("/petAll",async (req,res)=>{petSchema.find().then((err,rs)=>{err?res.send(err):res.send(rs)})})
 
 work.get("/ss",(req,res,next)=>{
     let obj = {

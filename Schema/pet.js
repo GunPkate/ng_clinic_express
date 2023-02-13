@@ -1,7 +1,7 @@
-let {Schema} = require("mongoose");
+let mongoose = require("mongoose");
 
-let petSchema = new Schema({
-    _id: String,
+let petSchema = new mongoose.Schema({
+    customer_id: mongoose.Types.ObjectId,
     name: String,
     code: String,
     remark: String
