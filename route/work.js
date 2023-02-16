@@ -85,14 +85,39 @@ work.post("/customerUpdate",async (req,res)=>{
         console.log(re)
 })
 
-work.post("/petSave",async (req,res)=>{
-    req.body.customer_id = new ObjectId(req.body.customer_id) //convert string obj
-    await petSchema.insertMany(req.body).then((err,result)=>{
-        err?res.send(err):res.send(result)
-    })
+work.post("/petSaveUpdate",async (req,res)=>{
+    if(req.body._id == null){
+        req.body.customer_id = new ObjectId(req.body.customer_id) //convert string obj
+        await petSchema.insertMany(req.body).then((err,result)=>{
+            err?res.send(err):res.send(result)
+        })
+    }
+    else{
+        petSchema.updateOne({_id:req.body._id},req.body,(err,result)=>{err?res.send(err):res.send(result)})
+    }
+
+
 })
 
-work.get("/petAll",async (req,res)=>{petSchema.find().then((err,rs)=>{err?res.send(err):res.send(rs)})})
+// work.get("/petAll",async (req,res)=>{petSchema.find().then((err,rs)=>{err?res.send(err):res.send(rs)})})
+work.get("/petAll",async (req,res)=>{petSchema.aggregate([
+    {
+        "$lookup":{
+            "from": 'customer', //collection
+            "localField": 'customer_id',
+            'foreignField': '_id',
+            'as' : 'customer' //alias
+        }
+    }
+]).then((err,rs)=>{err?res.send(err):res.send(rs)})})
+
+work.post("/petDelete",async (req,res)=>{
+    try {
+        await petSchema.findOneAndDelete({_id: req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)})
+    } catch (error) {
+        res.send(error)
+    }
+})
 
 work.get("/ss",(req,res,next)=>{
     let obj = {
