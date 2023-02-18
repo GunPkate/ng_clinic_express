@@ -119,6 +119,10 @@ work.post("/petDelete",async (req,res)=>{
     }
 })
 
+work.post("/petOfCustomer",(req,res)=>{
+    petSchema.find({customer_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)}) //pet.customer_id = customer._id 
+})
+
 work.get("/ss",(req,res,next)=>{
     let obj = {
         name: "name",
