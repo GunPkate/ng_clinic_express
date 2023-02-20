@@ -1,6 +1,7 @@
 const express = require('express')
 const work = express.Router()
 const mongoose = require('mongoose')
+const symptomSchema = mongoose.model("symptom",require('../Schema/symptom.js'))
 const clinicSchema = mongoose.model("clinic",require("../Schema/clinic.js"))
 const customerSchema = mongoose.model('customer',require("../Schema/customer"))
 const petSchema = mongoose.model('pet',require("../Schema/pet"))
@@ -121,6 +122,21 @@ work.post("/petDelete",async (req,res)=>{
 
 work.post("/petOfCustomer",(req,res)=>{
     petSchema.find({customer_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)}) //pet.customer_id = customer._id 
+})
+
+work.post("/symptom",(req,res)=>{
+    // console.log(req.body)
+    let data = {
+        symptom: req.body.symptom.sickness,
+        pet_id: req.body.pet._id = new ObjectId(req.body.pet._id) //convert string obj
+    }
+    console.log(data);
+    symptomSchema.insertMany(data).then((err,result)=>{err?res.send(err):res.send(result)})
+})
+
+work.post("/petCheckUp",(req,res)=>{
+    console.log(req.body.pet_id);
+    symptomSchema.find({pet_id:req.body.pet_id}).then((err,result)=>{err?res.send(err):res.send(result)}) //symptom.pet_id = pet._id 
 })
 
 work.get("/ss",(req,res,next)=>{
