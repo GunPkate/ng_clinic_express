@@ -120,24 +120,32 @@ work.post("/petDelete",async (req,res)=>{
     }
 })
 
-work.post("/petOfCustomer",(req,res)=>{
-    petSchema.find({customer_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)}) //pet.customer_id = customer._id 
+work.post("/petOfCustomer",async(req,res)=>{
+    await petSchema.find({customer_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)}) //pet.customer_id = customer._id 
 })
 
-work.post("/symptom",(req,res)=>{
-    // console.log(req.body)
+work.post("/symptom",async(req,res)=>{
     let data = {
         symptom: req.body.symptom.sickness,
         pet_id: req.body.pet._id = new ObjectId(req.body.pet._id) //convert string obj
     }
-    console.log(data);
-    symptomSchema.insertMany(data).then((err,result)=>{err?res.send(err):res.send(result)})
+    if(req.body.symptom._id == undefined){
+        // console.log("in",req.body.symptom._id )
+
+        // console.log(data);
+        await symptomSchema.insertMany(data).then((err,result)=>{err?res.send(err):res.send(result)})
+    }else{
+        console.log("update",req.body.symptom._id )
+        await symptomSchema.updateOne({_id:req.body.symptom._id },data).then((err,result)=>{err?res.send(err):res.send(result)})
+    }
 })
 
-work.post("/petCheckUp",(req,res)=>{
+work.post("/petCheckUp",async(req,res)=>{
     console.log(req.body.pet_id);
-    symptomSchema.find({pet_id:req.body.pet_id}).then((err,result)=>{err?res.send(err):res.send(result)}) //symptom.pet_id = pet._id 
+    await symptomSchema.find({pet_id:req.body.pet_id}).then((err,result)=>{err?res.send(err):res.send(result)}) //symptom.pet_id = pet._id 
 })
+
+work.post("/deleteSymptom",async(req,res)=>{ await symptomSchema.findOneAndDelete({_id: req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)}) })
 
 work.get("/ss",(req,res,next)=>{
     let obj = {
