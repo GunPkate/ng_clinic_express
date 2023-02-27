@@ -5,6 +5,7 @@ const symptomSchema = mongoose.model("symptom",require('../Schema/symptom.js'))
 const clinicSchema = mongoose.model("clinic",require("../Schema/clinic.js"))
 const customerSchema = mongoose.model('customer',require("../Schema/customer"))
 const petSchema = mongoose.model('pet',require("../Schema/pet"))
+const medicalSupplySchema = mongoose.model('medicalSupply',require("../Schema/medicalSupply"))
 const ObjectId = require('mongodb').ObjectId;
 // work.use((req,res,next)=>{
 //     res.setHeader('Access-Control-Allow-Origin','*')
@@ -54,7 +55,7 @@ work.get("/find",async(req,res)=>{
 })
 
 work.post("/clinicUpdate",async(req,res)=>{
-    const findall = await clinicSchema.findOneAndUpdate({_id:req.body._id},req.body).then(
+    const findall = await clinicSchema.updateOne({_id:req.body._id},req.body).then(
         (err,result)=>{
             err?res.status(400):res.status(200).json({
               resultCode: 20000,
@@ -157,5 +158,31 @@ work.get("/ss",(req,res,next)=>{
 
     res.status(200).json(obj)
 })
+
+work.post("/saveSupply",async(req,res)=>{ 
+    try {
+        await medicalSupplySchema.insertMany(req.body).then((err,result)=>{ err?res.send(err):res.send(result)})
+    } catch (error) {
+        res.statusCode(400)
+    }
+})
+
+work.post("/updateSupply",async(req,res)=>{
+    console.log(req.body);
+    console.log(req.body._id);
+    await medicalSupplySchema.updateOne({_id:req.body._id},req.body).then(
+        (err,result)=>{
+            err?res.status(400):res.status(200).json({
+              resultCode: 20000,
+              resultData: result,
+            });
+        }
+    );
+})
+
+work.get("/getSupply",async(req,res)=>{ await medicalSupplySchema.find({}).then((err,result)=>{ err?res.send(err):res.send(result)})})
+
+work.post("/deleteSupply",async(req,res)=>{console.log(req.body); await medicalSupplySchema.findOneAndDelete({_id: req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)}) })
+
 
 module.exports = work;
