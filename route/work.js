@@ -6,6 +6,7 @@ const clinicSchema = mongoose.model("clinic",require("../Schema/clinic.js"))
 const customerSchema = mongoose.model('customer',require("../Schema/customer"))
 const petSchema = mongoose.model('pet',require("../Schema/pet"))
 const medicalSupplySchema = mongoose.model('medicalSupply',require("../Schema/medicalSupply"))
+const prescriptionSchema = mongoose.model('prescription',require("../Schema/prescription"))
 const ObjectId = require('mongodb').ObjectId;
 // work.use((req,res,next)=>{
 //     res.setHeader('Access-Control-Allow-Origin','*')
