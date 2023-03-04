@@ -128,9 +128,10 @@ work.post("/petOfCustomer",async(req,res)=>{
 
 work.post("/symptom",async(req,res)=>{
     let data = {
-        symptom: req.body.symptom.sickness,
+        symptom: req.body.symptom,
         pet_id: req.body.pet._id = new ObjectId(req.body.pet._id) //convert string obj
     }
+    console.log("in",data )
     if(req.body.symptom._id == undefined){
         // console.log("in",req.body.symptom._id )
 
