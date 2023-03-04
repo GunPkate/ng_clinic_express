@@ -186,4 +186,14 @@ work.get("/getSupply",async(req,res)=>{ await medicalSupplySchema.find({}).then(
 work.post("/deleteSupply",async(req,res)=>{console.log(req.body); await medicalSupplySchema.findOneAndDelete({_id: req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)}) })
 
 
+work.post("/savePrescription",async(req,res)=>{
+    console.log(req.body);
+    await prescriptionSchema.insertMany(req.body).then((err,result)=>{err?res.send(err):res.send(result)})
+})
+
+work.post("/updatePrescription",async (req,res)=>{
+        const re = await prescriptionSchema.updateOne({_id: req.body._id},req.body).then((err,result)=>{err?res.send(err):res.send(result)})
+        console.log(re)
+})
+
 module.exports = work;
