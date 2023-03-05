@@ -199,7 +199,24 @@ work.post("/updatePrescription",async (req,res)=>{
 
 work.post("/getHistory", async (req,res)=>{
     console.log("Body",req.body);
-    await prescriptionSchema.find({symptom_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)})
+    // await prescriptionSchema.find({symptom_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)})
+
+    req.body._id = new ObjectId(req.body._id)
+    await prescriptionSchema.aggregate([
+        {
+            "$match":{
+                "symptom_id": req.body._id
+            }
+        }
+        ,{
+            "$lookup":{
+                "from": 'medicalSupply', //collection
+                "localField": 'medicalSupply_id',
+                'foreignField': '_id',
+                'as' : 'medicalSupply' //alias
+            }
+        }
+    ]).then((err,rs)=>{err?res.send(err):res.send(rs)})
 })
 
 module.exports = work;
