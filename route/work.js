@@ -189,7 +189,11 @@ work.post("/deleteSupply",async(req,res)=>{console.log(req.body); await medicalS
 
 work.post("/savePrescription",async(req,res)=>{
     console.log(req.body);
-    await prescriptionSchema.insertMany(req.body).then((err,result)=>{err?res.send(err):res.send(result)})
+    if(req.body._id == null){
+        await prescriptionSchema.insertMany(req.body).then((err,result)=>{err?res.send(err):res.send(result)})
+    }else{
+        await prescriptionSchema.updateOne(req.body).then((err,result)=>{err?res.send(err):res.send(result)})
+    }
 })
 
 work.post("/updatePrescription",async (req,res)=>{
@@ -218,5 +222,15 @@ work.post("/getHistory", async (req,res)=>{
         }
     ]).then((err,rs)=>{err?res.send(err):res.send(rs)})
 })
+work.post("/deleteHistory",async (req,res)=>{
+    console.log("delete body",req.body)
+    await prescriptionSchema.deleteOne({_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)})
+})
+
+work.post("/updateHistory",async (req,res)=>{
+    console.log("update body",req.body)
+    await prescriptionSchema.updateOne({_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)})
+})
+
 
 module.exports = work;
