@@ -197,4 +197,9 @@ work.post("/updatePrescription",async (req,res)=>{
         console.log(re)
 })
 
+work.post("/getHistory", async (req,res)=>{
+    console.log("Body",req.body);
+    await prescriptionSchema.find({symptom_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)})
+})
+
 module.exports = work;
