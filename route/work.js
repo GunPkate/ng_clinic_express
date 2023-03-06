@@ -234,5 +234,36 @@ work.post("/updateHistory",async (req,res)=>{
     await prescriptionSchema.updateOne({_id:req.body._id}).then((err,result)=>{err?res.send(err):res.send(result)})
 })
 
+work.post("/getReport", async (req,res)=>{
+    console.log(req)
+    // await symptomSchema.find({}).then((err,result)=>{err?res.send(err):res.send(result)})
+    //symptom -> pet, symptom -> customer  normal case 
+    
+    //symptom -> pet -> customer  rare case (this)
+    symptomSchema.aggregate([
+        {
+            "$lookup": {
+                'from' : 'pet',
+                'localField' : 'pet_id',
+                'foreignField' : '_id',
+                'as' : 'pet',
+            }
+        },{
+            //declare variable(used in mongoDB) "" : any name ''
+            "$unwind": '$pet'
+        },{
+            "$lookup": {
+                'from' : 'customer',
+                'localField' : 'pet.customer_id',
+                'foreignField' : '_id',
+                'as' : 'customer',
+            
+            }
+        },{
+            //declare variable(used in mongoDB) "" : any name ''
+            "$unwind": '$customer' // for linking to other
+        },
+    ]).then((err,result)=>err?res.send(err):res.send(result))
+})
 
 module.exports = work;
